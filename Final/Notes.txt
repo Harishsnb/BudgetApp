@@ -1,0 +1,23 @@
+Project planning and architecture setup
+
+To do list: 
+1) Add event handler
+2) Get Input values
+3) Add the new item into our data structure
+4) Add the new item into our UI
+5) Calculate the budget
+6) Update the UI
+
+Modules are important aspects of any robust application's architecture. 
+organise the code - clean and seperate
+Data encapsulation - expose and protect data accordingly
+
+Structuring our code with Modules 
+
+UI Module =>  Get Input values. Add the new item into our UI. Update the UI. 
+Data Module => Add the new item into our data structure. Calculate the budget.
+Controller Module => Add event handler.
+
+
+
+
