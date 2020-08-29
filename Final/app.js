@@ -1,6 +1,30 @@
 // DataController
 var budgetDataController = (function(){
 
+    //creating function constructors for income and expense
+    var Income = function(id,description,value){
+        this.id = id;
+        this.description = description;
+        this.value = value;
+    };
+    var Expense = function(id,description,value){
+        this.id = id;
+        this.description = description;
+        this.value = value;
+    };
+
+    // creating an object to store the data of income and expense 
+    var budgetData = {
+        allItems: {
+            incData: [],
+            expData: []
+        },
+        totalbudget: {
+            inc: 0,
+            exp: 0
+        }
+    };
+
 })();
 
 
