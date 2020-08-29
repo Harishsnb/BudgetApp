@@ -34,10 +34,28 @@ var budgetUIController = (function(){
 // Global app Controller
 
 var budgetController = (function(datactrl, UIctrl){
+  
+    // function that handles the events 
+    var handleEventListeners = function(){
+            var DOM = UIctrl.getDOMAttributes(); // receiving DOMAttributes 
+            //console.log(DOM);
+            //handling the check event when the user clicks the tick icon
+            document.querySelector(DOM.inputBtn).addEventListener('click', controlAddItem);
 
-    var DOM = UIctrl.getDOMAttributes(); // receiving DOMAttributes 
+            // user also preses the enter/return key genrally instead of click on tick or submit button.
+            //handling the keyboard event of return/enter keys
+            //event reference : https://developer.mozilla.org/en-US/docs/Web/Events
+            document.addEventListener('keypress',function(event){
+
+            //console.log(event);
+             if (event.keyCode ===13 || event.which === 13){
+              controlAddItem();
+              //console.log("Enter/Return key was pressed.")
+              }
+            });
+    }
+
     
-    console.log(DOM);
     var controlAddItem = function(){
 
         // 1. Get Input values
@@ -50,21 +68,16 @@ var budgetController = (function(datactrl, UIctrl){
         console.log(UserInupt);
     }
     
-    //handling the check event when the user clicks the tick icon
-    document.querySelector(DOM.inputBtn).addEventListener('click', controlAddItem);
-
-    // user also preses the enter/return key genrally instead of click on tick or submit button.
-    //handling the keyboard event of return/enter keys
-    //event reference : https://developer.mozilla.org/en-US/docs/Web/Events
-    document.addEventListener('keypress',function(event){
-
-        //console.log(event);
-        if (event.keyCode ===13 || event.which === 13){
-            controlAddItem();
-            //console.log("Enter/Return key was pressed.")
+    return {
+        init: function(){
+            handleEventListeners();
+            console.log("Application has started");
         }
-    });
+    };
 
 })(budgetDataController,budgetUIController);
+
+// calling the init function to start the application
+budgetController.init();
 
 
