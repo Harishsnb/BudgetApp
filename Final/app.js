@@ -16,14 +16,38 @@ var budgetDataController = (function(){
     // creating an object to store the data of income and expense 
     var budgetData = {
         allItems: {
-            incData: [],
-            expData: []
+            inc: [],
+            exp: []
         },
         totalbudget: {
             inc: 0,
             exp: 0
         }
     };
+    return {
+        addNewBudgetItem: function(type,description,value){
+            var newBudgetItem, budgetID;
+            //creating an iD
+            //Checking if already data available and adding the ID accordingly
+            if (budgetData.allItems[type].length > 0){
+            budgetID = budgetData.allItems[type][budgetData.allItems[type].length - 1].id + 1 
+            } else {
+                budgetID = 0;
+            }
+            //creating a newbudget item based on inc and exp
+            if (type === 'exp'){
+                newBudgetItem = new Expense (budgetID,description,value);
+            } else if (type === 'inc'){
+                newBudgetItem = new Income (budgetID,description,value);
+            }
+            //pushing the newbudget item into the data structure
+            budgetData.allItems[type].push(newBudgetItem);
+        },
+        testing: function(){
+            console.log(budgetData);
+        }
+
+    }
 
 })();
 
@@ -81,15 +105,18 @@ var budgetController = (function(datactrl, UIctrl){
 
     
     var controlAddItem = function(){
-
+        
+        var userInupt, newItem
         // 1. Get Input values
-        var UserInupt = UIctrl.getUserInput(); //receiving the user input to handle the events
+        userInupt = UIctrl.getUserInput(); //receiving the user input to handle the events
         // 2. Add the new item into budgetDataController
+        newUserBudgetItem = budgetDataController.addNewBudgetItem(userInupt.type, userInupt.description,userInupt.value);
+        budgetDataController.testing();
         // 3. Add the new item into the UI
         // 4. Calculate the buget
         // 5. Update the UI to display the budget
         //console.log("Event handling works.")
-        console.log(UserInupt);
+        console.log(userInupt);
     }
     
     return {
