@@ -42,6 +42,8 @@ var budgetDataController = (function(){
             }
             //pushing the newbudget item into the data structure
             budgetData.allItems[type].push(newBudgetItem);
+            return newBudgetItem;
+
         },
         testing: function(){
             console.log(budgetData);
@@ -61,7 +63,9 @@ var budgetUIController = (function(){
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
-        inputBtn: '.add__btn'      
+        inputBtn: '.add__btn' ,
+        incomeContainer: '.income__list',
+        expenseContainer: '.expenses__list'    
     } ;
 
     return {
@@ -72,6 +76,51 @@ var budgetUIController = (function(){
                 value: document.querySelector(DOMAttributes.inputValue).value //get the value entered by user
             };
         },
+        //adding the newbuget item to the UI
+        displayBudgetList: function(newBudgetItem, budgetType){
+            
+            var htmlString, newHTMLString,domElement;
+            //create a HTML string with placeholders
+            if (budgetType === 'inc'){
+
+                domElement = DOMAttributes.incomeContainer;
+                //console.log(domElement);
+                htmlString = `<div  class="item clearfix" id="income-%id%">
+                               <div class="item__description">%description%</div>  
+                               <div class="right clearfix">
+                               <div class="item__value"> + %value%</div>
+                               <div class="item__delete">
+                               <button class="item__delete--btn">
+                               <i class="ion-ios-close-outline"></i>
+                               </button>
+                               </div>
+                               </div>
+                               </div>`;
+            } else if (budgetType === 'exp'){
+
+                domElement = DOMAttributes.expenseContainer;
+                htmlString = ` <div class="item clearfix" id="expense-%id%">
+                               <div class="item__description">%description%</div>
+                               <div class="right clearfix">
+                               <div class="item__value"> - %value%</div>
+                               <div class="item__percentage">21%</div>
+                               <div class="item__delete">
+                               <button class="item__delete--btn">
+                               <i class="ion-ios-close-outline"></i>
+                               </button>
+                               </div>
+                               </div>
+                               </div>`;
+            }
+            //replacing the place holders with userinput data
+            newHTMLString = htmlString.replace('%id%',newBudgetItem.id)
+            newHTMLString = newHTMLString.replace('%description%',newBudgetItem.description);
+            newHTMLString = newHTMLString.replace('%value%',newBudgetItem.value);
+            console.log(newHTMLString);
+            //insert the HTML element into the DOM using insertAdjacentHTML
+            document.querySelector(domElement).insertAdjacentHTML('beforeend',newHTMLString);
+        },
+        
         getDOMAttributes: function(){
             return DOMAttributes;
         }
@@ -106,17 +155,21 @@ var budgetController = (function(datactrl, UIctrl){
     
     var controlAddItem = function(){
         
-        var userInupt, newItem
+        var userInupt, newUserBudgetItem
         // 1. Get Input values
         userInupt = UIctrl.getUserInput(); //receiving the user input to handle the events
+        console.log(userInupt);
         // 2. Add the new item into budgetDataController
-        newUserBudgetItem = budgetDataController.addNewBudgetItem(userInupt.type, userInupt.description,userInupt.value);
-        budgetDataController.testing();
+        newUserBudgetItem = datactrl.addNewBudgetItem(userInupt.type, userInupt.description,userInupt.value);
+        //console.log(newUserBudgetItem);
+        //datactrl.testing(); //to see the biuget datat
         // 3. Add the new item into the UI
+        UIctrl.displayBudgetList(newUserBudgetItem,userInupt.type);
         // 4. Calculate the buget
         // 5. Update the UI to display the budget
         //console.log("Event handling works.")
-        console.log(userInupt);
+       
+        
     }
     
     return {
