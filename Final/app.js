@@ -73,7 +73,7 @@ var budgetUIController = (function(){
             return {
                 type: document.querySelector(DOMAttributes.inputType).value, // inc or exp
                 description: document.querySelector(DOMAttributes.inputDescription).value, //user description 
-                value: document.querySelector(DOMAttributes.inputValue).value //get the value entered by user
+                value: parseFloat(document.querySelector(DOMAttributes.inputValue).value) //get the value entered by user
             };
         },
         //adding the newbuget item to the UI
@@ -160,15 +160,21 @@ var budgetController = (function(datactrl, UIctrl){
               //console.log("Enter/Return key was pressed.")
               }
             });
-    }
+    };
 
-    
+    var calculateBudget = function(){
+
+         // 4. Calculate the buget
+        // 5. Update the UI to display the budget
+        
+    };
     var controlAddItem = function(){
         
         var userInupt, newUserBudgetItem
         // 1. Get Input values
         userInupt = UIctrl.getUserInput(); //receiving the user input to handle the events
         console.log(userInupt);
+        if (userInupt.description!=="" && !isNaN(userInupt.value) && userInupt.value > 0){
         // 2. Add the new item into budgetDataController
         newUserBudgetItem = datactrl.addNewBudgetItem(userInupt.type, userInupt.description,userInupt.value);
         //console.log(newUserBudgetItem);
@@ -176,9 +182,10 @@ var budgetController = (function(datactrl, UIctrl){
         // 3. Add the new item into the UI
         UIctrl.displayBudgetList(newUserBudgetItem,userInupt.type);
         UIctrl.clearUserInput(); // to clear the user inputs 
-        // 4. Calculate the buget
-        // 5. Update the UI to display the budget
         //console.log("Event handling works.")
+
+        };
+        
        
         
     }
