@@ -123,6 +123,16 @@ var budgetUIController = (function(){
         
         getDOMAttributes: function(){
             return DOMAttributes;
+        },
+        // clears the input values entered by the user and place the focus on the 
+        clearUserInput: function(){
+            var inputFields, fieldsArray;
+            inputFields = document.querySelectorAll(DOMAttributes.inputDescription + ', ' +
+            DOMAttributes.inputValue);
+            fieldsArray = Array.from(inputFields);
+            //console.log(fieldsArray);
+            fieldsArray.map(e => e.value = "");
+            fieldsArray[0].focus();
         }
 
     }
@@ -165,6 +175,7 @@ var budgetController = (function(datactrl, UIctrl){
         //datactrl.testing(); //to see the biuget datat
         // 3. Add the new item into the UI
         UIctrl.displayBudgetList(newUserBudgetItem,userInupt.type);
+        UIctrl.clearUserInput(); // to clear the user inputs 
         // 4. Calculate the buget
         // 5. Update the UI to display the budget
         //console.log("Event handling works.")
