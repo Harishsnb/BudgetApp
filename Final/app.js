@@ -22,8 +22,15 @@ var budgetDataController = (function(){
         totalbudget: {
             inc: 0,
             exp: 0
-        }
+        },
+        budget: 0,
+        percent: -1 // intitailly set to -1 as if it does not exist
     };
+    var calculateTotal = function(type){
+        var sum = 0;
+        budgetData.allItems[type].forEach(currentType => sum += currentType.value);
+        budgetData.totalbudget[type] = sum;
+    }
     return {
         addNewBudgetItem: function(type,description,value){
             var newBudgetItem, budgetID;
@@ -43,6 +50,32 @@ var budgetDataController = (function(){
             //pushing the newbudget item into the data structure
             budgetData.allItems[type].push(newBudgetItem);
             return newBudgetItem;
+
+        },
+        calculateBudget: function(){
+
+            //calculate total inc and exp
+            calculateTotal('exp');
+            calculateTotal('inc');
+            //calculate the budget: inc - exp
+            budgetData.budget = budgetData.totalbudget.inc - budgetData.totalbudget.exp;
+
+            //calculate percentage of income the user spent
+            if (budgetData.totalbudget.inc > 0){  // because if inc = 0 then percent will be infinity
+                budgetData.percent = Math.round((budgetData.totalbudget.exp/budgetData.totalbudget.inc)*100); 
+            } else {
+                budgetData.percent = -1;
+            }
+            
+
+        },
+        getBudget: function(){
+            return {
+                budget: budgetData.budget,
+                incTotal: budgetData.totalbudget.inc,
+                expTotal: budgetData.totalbudget.exp,
+                percent: budgetData.percent
+            };
 
         },
         testing: function(){
@@ -65,7 +98,9 @@ var budgetUIController = (function(){
         inputValue: '.add__value',
         inputBtn: '.add__btn' ,
         incomeContainer: '.income__list',
-        expenseContainer: '.expenses__list'    
+        expenseContainer: '.expenses__list',  
+        incomeValue: 'budget__income--value',
+        expenseValue: 'budget__expenses--value'
     } ;
 
     return {
@@ -96,6 +131,7 @@ var budgetUIController = (function(){
                                </div>
                                </div>
                                </div>`;
+               
             } else if (budgetType === 'exp'){
 
                 domElement = DOMAttributes.expenseContainer;
@@ -133,6 +169,15 @@ var budgetUIController = (function(){
             //console.log(fieldsArray);
             fieldsArray.map(e => e.value = "");
             fieldsArray[0].focus();
+        },
+        diplaybudget: function(budgetObj){
+            var incomeTotal = document.getElementsByClassName(DOMAttributes.incomeValue);
+            //console.log(incomeTotal);
+            incomeTotal[0].innerHTML = `+ ${budgetObj.incTotal}`;
+            //console.log(budgetObj.incTotal);
+            var expenseTotal = document.getElementsByClassName(DOMAttributes.expenseValue);
+            //console.log(incomeTotal);
+            expenseTotal[0].innerHTML = `- ${budgetObj.expTotal}`;
         }
 
     }
@@ -162,10 +207,16 @@ var budgetController = (function(datactrl, UIctrl){
             });
     };
 
-    var calculateBudget = function(){
+    var updateBudget = function(){
 
-         // 4. Calculate the buget
-        // 5. Update the UI to display the budget
+         // 1. Calculate the buget
+            datactrl.calculateBudget();
+
+         // 2. return the budget
+            var budget = datactrl.getBudget();
+            console.log(budget);
+        // 3. Update the UI to display the budget
+            UIctrl.diplaybudget(budget);
         
     };
     var controlAddItem = function(){
@@ -178,12 +229,13 @@ var budgetController = (function(datactrl, UIctrl){
         // 2. Add the new item into budgetDataController
         newUserBudgetItem = datactrl.addNewBudgetItem(userInupt.type, userInupt.description,userInupt.value);
         //console.log(newUserBudgetItem);
-        //datactrl.testing(); //to see the biuget datat
+        datactrl.testing(); //to see the biuget datat
         // 3. Add the new item into the UI
         UIctrl.displayBudgetList(newUserBudgetItem,userInupt.type);
         UIctrl.clearUserInput(); // to clear the user inputs 
         //console.log("Event handling works.")
-
+        //calculate and update budget
+        updateBudget();
         };
         
        
